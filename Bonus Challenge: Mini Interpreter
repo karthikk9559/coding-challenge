@@ -1,0 +1,50 @@
+import java.util.*;
+import java.util.regex.*;
+
+public class MiniInterpreter {
+    private static final Pattern LET = Pattern.compile("let\\s+(\\w+)\\s*=\\s*(\\d+)");
+    private static final Pattern IF = Pattern.compile("if\\s+(.+)\\s+then\\s+(.+)");
+
+    private Map<String,Integer> vars = new HashMap<>();
+
+    public void run(List<String> lines) {
+        for (String line : lines) {
+            Matcher mLet = LET.matcher(line);
+            if (mLet.matches()) {
+                vars.put(mLet.group(1), Integer.parseInt(mLet.group(2)));
+            } else {
+                Matcher mIf = IF.matcher(line);
+                if (mIf.matches()) {
+                    if (evalCond(mIf.group(1))) {
+                        run(Collections.singletonList(mIf.group(2).trim()));
+                    }
+                } else {
+                    System.out.println(evalExpr(line));
+                }
+            }
+        }
+    }
+
+    private boolean evalCond(String cond) {
+        cond = cond.replaceAll("(\\w+)", "vars.getOrDefault(\"$1\",0)");
+        return Boolean.TRUE.equals(new ScriptEngineManager()
+            .getEngineByName("JavaScript").getEval(cond));
+    }
+
+    private int evalExpr(String expr) {
+        expr = expr.replaceAll("(\\w+)", "vars.getOrDefault(\"$1\",0)");
+        return (int) new ScriptEngineManager()
+            .getEngineByName("JavaScript").getEval(expr);
+    }
+
+    public static void main(String[] args) {
+        List<String> lines = List.of(
+            "let x = 5",
+            "if x > 3 then print(x)",
+            "print(x + 2)"
+        );
+        new MiniInterpreter().run(lines);
+        // → 5
+        // → 7
+    }
+}
