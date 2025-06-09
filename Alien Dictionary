@@ -1,0 +1,47 @@
+import java.util.*;
+
+public class AlienDictionary {
+    public String alienOrder(String[] words) {
+        Map<Character, Set<Character>> adj = new HashMap<>();
+        Map<Character, Integer> indegree = new HashMap<>();
+
+        for (String w : words)
+            for (char c : w) indegree.putIfAbsent(c, 0);
+
+        for (int i = 0; i < words.length - 1; i++) {
+            String w1 = words[i], w2 = words[i+1];
+            if (w1.length() > w2.length() && w1.startsWith(w2)) return "";
+            for (int j = 0; j < Math.min(w1.length(), w2.length()); j++) {
+                char c1 = w1.charAt(j), c2 = w2.charAt(j);
+                if (c1 != c2) {
+                    adj.computeIfAbsent(c1, k -> new HashSet<>());
+                    if (adj.get(c1).add(c2))
+                        indegree.put(c2, indegree.get(c2) + 1);
+                    break;
+                }
+            }
+        }
+
+        Queue<Character> q = new LinkedList<>();
+        for (var e : indegree.entrySet())
+            if (e.getValue() == 0) q.offer(e.getKey());
+
+        StringBuilder sb = new StringBuilder();
+        while (!q.isEmpty()) {
+            char c = q.poll(); sb.append(c);
+            for (char nei : adj.getOrDefault(c, Collections.emptySet())) {
+                indegree.put(nei, indegree.get(nei) - 1);
+                if (indegree.get(nei) == 0) q.offer(nei);
+            }
+        }
+        return sb.length() == indegree.size() ? sb.toString() : "";
+    }
+
+    public static void main(String[] args) {
+        AlienDictionary sol = new AlienDictionary();
+        System.out.println(sol.alienOrder(
+            new String[]{"baa","abcd","abca","cab","cad"})); // → "bdac"
+        System.out.println(sol.alienOrder(
+            new String[]{"wrt","wrf","er","ett","rftt"}));    // → "wertf"
+    }
+}
