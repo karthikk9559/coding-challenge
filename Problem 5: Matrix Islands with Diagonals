@@ -1,0 +1,44 @@
+public class MatrixIslands {
+    public int countIslands(int[][] grid) {
+        int n = grid.length, m = grid[0].length;
+        boolean[][] vis = new boolean[n][m];
+        int[][] dirs = {
+            {1,0},{-1,0},{0,1},{0,-1},{1,1},{1,-1},{-1,1},{-1,-1}
+        };
+        int cnt = 0;
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < m; j++)
+                if (grid[i][j] == 1 && !vis[i][j]) {
+                    dfs(grid, vis, i, j, dirs);
+                    cnt++;
+                }
+        return cnt;
+    }
+
+    private void dfs(int[][] g, boolean[][] vis, int r, int c, int[][] dirs) {
+        Stack<int[]> st = new Stack<>();
+        st.push(new int[]{r,c});
+        vis[r][c] = true;
+        while (!st.isEmpty()) {
+            var p = st.pop();
+            for (var d : dirs) {
+                int nr = p[0] + d[0], nc = p[1] + d[1];
+                if (nr>=0&&nc>=0&&nr<g.length&&nc<g[0].length&&
+                    !vis[nr][nc] && g[nr][nc]==1) {
+                    vis[nr][nc] = true;
+                    st.push(new int[]{nr,nc});
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        MatrixIslands sol = new MatrixIslands();
+        int[][] grid = {
+            {1,0,1},
+            {0,1,0},
+            {1,0,1}
+        };
+        System.out.println(sol.countIslands(grid)); // → 5
+    }
+}
