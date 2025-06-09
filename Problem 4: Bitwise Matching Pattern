@@ -1,5 +1,5 @@
 public class NextWithSameOnes {
-    public int next(int n) {
+    public static int next(int n) {
         int c0 = n & -n;
         int r = n + c0;
         int ones = Integer.bitCount(n ^ r);
@@ -7,8 +7,7 @@ public class NextWithSameOnes {
     }
 
     public static void main(String[] args) {
-        NextWithSameOnes sol = new NextWithSameOnes();
-        System.out.println(sol.next(6));       // → 9
-        System.out.println(sol.next(0b10110)); // → 0b11001 (25)
+        System.out.println(next(6));      // 9
+        System.out.println(next(0b10110)); // 25
     }
 }
