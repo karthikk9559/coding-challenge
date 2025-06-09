@@ -1,0 +1,50 @@
+import java.util.*;
+
+public class SudokuValidator {
+    public static boolean isValidSudoku(int[][] board, List<List<int[]>> zones) {
+        int n = 9;
+        for (int i = 0; i < n; i++) {
+            boolean[] row = new boolean[n+1], col = new boolean[n+1];
+            for (int j = 0; j < n; j++) {
+                int r = board[i][j], c = board[j][i];
+                if (r < 1 || r > 9 || row[r]) return false;
+                if (c < 1 || c > 9 || col[c]) return false;
+                row[r] = col[c] = true;
+            }
+        }
+        for (List<int[]> zone : zones) {
+            boolean[] seen = new boolean[10];
+            for (int[] cell : zone) {
+                int v = board[cell[0]][cell[1]];
+                if (v < 1 || v > 9 || seen[v]) return false;
+                seen[v] = true;
+            }
+        }
+        return true;
+    }
+
+    // Sample test
+    public static void main(String[] args) {
+        int[][] board = {
+            {5,3,4,6,7,8,9,1,2},
+            {6,7,2,1,9,5,3,4,8},
+            {1,9,8,3,4,2,5,6,7},
+            {8,5,9,7,6,1,4,2,3},
+            {4,2,6,8,5,3,7,9,1},
+            {7,1,3,9,2,4,8,5,6},
+            {9,6,1,5,3,7,2,8,4},
+            {2,8,7,4,1,9,6,3,5},
+            {3,4,5,2,8,6,1,7,9}
+        };
+        List<List<int[]>> zones = new ArrayList<>();
+        for (int r = 0; r < 9; r += 3)
+            for (int c = 0; c < 9; c += 3) {
+                List<int[]> zone = new ArrayList<>();
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 3; j++)
+                        zone.add(new int[]{r+i, c+j});
+                zones.add(zone);
+            }
+        System.out.println(isValidSudoku(board, zones));  // → true
+    }
+}
