@@ -1,0 +1,14 @@
+public class NextWithSameOnes {
+    public int next(int n) {
+        int c0 = n & -n;
+        int r = n + c0;
+        int ones = Integer.bitCount(n ^ r);
+        return r | ((1 << (ones - 2)) - 1);
+    }
+
+    public static void main(String[] args) {
+        NextWithSameOnes sol = new NextWithSameOnes();
+        System.out.println(sol.next(6));       // → 9
+        System.out.println(sol.next(0b10110)); // → 0b11001 (25)
+    }
+}
