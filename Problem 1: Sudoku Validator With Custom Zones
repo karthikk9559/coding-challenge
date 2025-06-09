@@ -1,29 +1,29 @@
 import java.util.*;
 
 public class SudokuValidator {
-    public static boolean isValidSudoku(int[][] board, List<List<int[]>> zones) {
+    public static boolean isValid(int[][] b, List<List<int[]>> zones) {
         int n = 9;
         for (int i = 0; i < n; i++) {
-            boolean[] row = new boolean[n+1], col = new boolean[n+1];
+            boolean[] row = new boolean[n + 1];
+            boolean[] col = new boolean[n + 1];
             for (int j = 0; j < n; j++) {
-                int r = board[i][j], c = board[j][i];
-                if (r < 1 || r > 9 || row[r]) return false;
-                if (c < 1 || c > 9 || col[c]) return false;
-                row[r] = col[c] = true;
+                int rv = b[i][j], cv = b[j][i];
+                if (rv < 1 || rv > n || row[rv]) return false;
+                if (cv < 1 || cv > n || col[cv]) return false;
+                row[rv] = col[cv] = true;
             }
         }
         for (List<int[]> zone : zones) {
-            boolean[] seen = new boolean[10];
-            for (int[] cell : zone) {
-                int v = board[cell[0]][cell[1]];
-                if (v < 1 || v > 9 || seen[v]) return false;
+            boolean[] seen = new boolean[n + 1];
+            for (int[] c : zone) {
+                int v = b[c[0]][c[1]];
+                if (v < 1 || v > n || seen[v]) return false;
                 seen[v] = true;
             }
         }
         return true;
     }
 
-    // Sample test
     public static void main(String[] args) {
         int[][] board = {
             {5,3,4,6,7,8,9,1,2},
@@ -39,12 +39,12 @@ public class SudokuValidator {
         List<List<int[]>> zones = new ArrayList<>();
         for (int r = 0; r < 9; r += 3)
             for (int c = 0; c < 9; c += 3) {
-                List<int[]> zone = new ArrayList<>();
+                List<int[]> z = new ArrayList<>();
                 for (int i = 0; i < 3; i++)
                     for (int j = 0; j < 3; j++)
-                        zone.add(new int[]{r+i, c+j});
-                zones.add(zone);
+                        z.add(new int[]{r + i, c + j});
+                zones.add(z);
             }
-        System.out.println(isValidSudoku(board, zones));  // → true
+        System.out.println(isValid(board, zones));  // → true
     }
 }
